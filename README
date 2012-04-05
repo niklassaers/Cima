@@ -1,0 +1,30 @@
+The purpose of this project is to create a Neo4J backed store for your iOS app's data.
+I'd like to later on build a very, very similar fork for a Riak backed store and a MongoDB backed store
+
+I've called it Cima, after the italian composer Giovanni Paolo Cima (c. 1570 – 1622).
+
+Inspirations on the iOS side (probably with a lot of up-coming copy/paste? ;-) ) are Datakit, RestKit and Magical Record
+ - https://github.com/eaigner/DataKit (@eaigner)
+ - https://github.com/RestKit/RestKit (@blakewatters)
+ - https://github.com/magicalpanda/MagicalRecord (@casademora)
+
+The Scala/Neo4J/Play part is built on (and probably butchered, sorry about that) the excelent work of Andy Petrella
+ - https://github.com/andypetrella/Play20WithNeo4J (@noootsab)
+
+NB, my main motivation for doing this is that I'm learning Scala. And I think DataKit is really cool, I think Neo4J is really cool, and I love working with Core Data.
+NB, this is my first ever Scala project, so don't hold back on the pull requests or suggestions
+NB, this is my easter holiday project. After easter, I'll have to look at the results and decide what to do with it from there
+
+Copyright 2012, Niklas Saers
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
