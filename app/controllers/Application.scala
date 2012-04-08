@@ -62,34 +62,6 @@ object Application extends Controller {
     Ok(props.toString)
   }
 
-  def createUnAuth = Action(parse.json) { request =>
-    var props:Map[String, JsValue] = Map[String, JsValue]()
-    request.body match {
-      case JsObject(fields) => { props = fields.toMap }
-      case _ => {} // Ok("received something else: " + request.body + '\n')
-    }
-
-    if(!props.contains("UUID"))
-      props += "UUID" -> toJson(UniqueIdGenerator.uuid)
-
-    if(!props.contains("entity"))
-      props += "entity" -> toJson("unset")
-
-    props += "should" -> toJson("appear")
-
-    val (node, data: JsObject) = Http(
-      (neo.neoRestNode <<(stringify(toJson(props)), "application/json"))
-        <:< Map("Accept" -> "application/json")
-        >! {
-        jsValue => ((jsValue \ "self").as[String], (jsValue \ "data").as[JsObject])
-      })
-
-//    neo.indexMap(props, "idxEntity", "entity", props.get("entity").get.toString)
-
-
-    Ok("Yes - " + props + " / " + data.toString)
-  }
-
   def read(uuid: String) = Action  {
     Ok("404")
   }
