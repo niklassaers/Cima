@@ -59,8 +59,22 @@ object Application extends Controller {
 
     props += "username" -> toJson(username)
 
-    Ok(props.toString)
+    val (nodeURI: String, data: JsObject) = Http(
+      (neo.neoRestNode <<(stringify(toJson(props)), "application/json"))
+        <:< Map("Accept" -> "application/json")
+        >! {
+        jsValue => ((jsValue \ "self").as[String], (jsValue \ "data").as[JsObject])
+      })
+
+    var ret = neo.indexNodeURI(nodeURI, "idxEntity", "entity", props.get("entity").get.toString)
+    ret = neo.indexNodeURI(nodeURI, "idxUUIDs", "UUID", props.get("UUID").get.toString)
+
+//    val entityNodeURL = neo.findNodeFromIndex("idxEntity", "entity", props.get("entity").get.toString)
+//    neo.createRelationshipForURIs(createRelationship, "IS_A", entityNodeURL)
+
+    Ok("Yes - " + props + " / " + data.toString)
   }
+
 
   def read(uuid: String) = Action  {
     Ok("404")

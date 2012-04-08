@@ -10,7 +10,7 @@ import utils.persistence.graph
  * Date: 2/02/12
  */
 abstract class Model[A <: Model[A]] {
-  val id:Int;
+  val id:Int
 
   def save(implicit m:ClassManifest[A], f:Format[A]):A = graph.saveNode[A](this.asInstanceOf[A])
 

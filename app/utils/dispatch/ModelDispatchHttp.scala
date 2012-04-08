@@ -32,4 +32,5 @@ class ModelHandlers(subject: HandlerVerbs) {
     (jsValue) =>
       block(filter(jsValue).map(fromJson[M](_)))
   }
+
 }

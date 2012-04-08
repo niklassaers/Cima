@@ -154,10 +154,10 @@ trait Neo4JRestService extends GraphService[Model[_]] {
   }
 
 
-  def indexMap(map: Map[String, JsValue], indexName: String, key: String, value: String) {
-    val uuid = map.get("UUID").get
+
+  def indexNodeURI(nodeURI: String, indexName: String, key: String, value: String) {
     val props = JsObject(Seq(
-      "uri" -> JsString(neoRestNodeByUUID(uuid).path),
+      "uri" -> JsString(nodeURI),
       "key" -> JsString(key),
       "value" -> JsString(value)
     ))
@@ -194,6 +194,26 @@ trait Neo4JRestService extends GraphService[Model[_]] {
     createRelationship(root, rel, end)
   }
 
+  def createRelationshipForURIs(startURI: String, rel: String, endURI: String) {
+    val createRelationship = Http(url(startURI) <:< Map("Accept" -> "application/json") >! {
+      jsValue => (jsValue \ "create_relationship").as[String]
+    })
+
+    //create the relationship 'rel' to the created node
+    //the payload
+    val props = JsObject(Seq(
+      "to" -> JsString(endURI),
+      "type" -> JsString(rel)
+    ))
+    //the request
+    Http(
+      (buildUrl(createRelationship) <<(stringify(props), "application/json"))
+        <:< Map("Accept" -> "application/json")
+        >! {
+        jsValue => //((jsValue \ "self").as[String], (jsValue \ "data").as[JsObject])
+      })
+  }
+
   def createRelationship(start: Model[_], rel: String, end: Model[_]) {
     //retrieve the creation rel url for the kind
     val createRelationship = Http(neoRestNodeById(start.id) <:< Map("Accept" -> "application/json") >! {
@@ -214,4 +234,26 @@ trait Neo4JRestService extends GraphService[Model[_]] {
         jsValue => //((jsValue \ "self").as[String], (jsValue \ "data").as[JsObject])
       })
   }
+
+  /*
+  def findNodeFromIndex(indexName: String, key: String, value: String)(implicit m: ClassManifest[JsValue], f: Format[JsValue]): Seq[JsValue] = {
+    //todo use it in other places ?
+    //todo ... now we override the default
+
+    implicit val defaultResultsFilter: (JsValue) => Iterable[JsValue] = {
+      jsValue: JsValue =>
+      //the first list is the global result
+      //underneath lists are composing all returnable
+      //each JsValue is then a returnable
+        jsValue.as[Seq[JsValue]].map { _ \ "data" }
+    }
+
+    Http((neoRestNodeIndex(indexName) / key / value)
+      <:< Map("Accept" -> "application/json") >! {
+      jsValue =>
+      //((jsValue \ "self").as[String], (jsValue \ "data").as[JsObject])
+    })
+  }
+  */
+
 }
