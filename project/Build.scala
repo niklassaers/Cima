@@ -4,11 +4,8 @@ import PlayProject._
 
 object ApplicationBuild extends Build {
 
-    val appName         = "Play20WithNeo4J"
+    val appName         = "Cima"
     val appVersion      = "1.0"
-
-    var facebookKey     = "209718142399215"
-    var facebookSecret  = "7675c9ecc3b9b2c15003fa43e92035fe"
 
     val appDependencies = Seq(
       // Add your project dependencies here,

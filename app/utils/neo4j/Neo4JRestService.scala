@@ -20,9 +20,6 @@ trait Neo4JRestService extends GraphService[Model[_]] {
   val NEO4J_USERNAME=""
   val NEO4J_PASSWORD=""
 
-
-  //val neoRest = :/("localhost", 7474)
-  //val neoRest = :/(url, port) as ("user, pwd)
   val neoRest = :/(NEO4J_URL, NEO4J_PORT) as (NEO4J_USERNAME, NEO4J_PASSWORD)
 
   val neoRestBase = neoRest / "db" / "data"

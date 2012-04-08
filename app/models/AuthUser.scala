@@ -7,6 +7,9 @@ package models
  * Time: 12:09 AM
  */
 
-case class AuthUser (name: String) {
+case class AuthUser (user: String) {
 
+  def find(param: Any) = {
+      new AuthUser("Joe")
+  }
 }

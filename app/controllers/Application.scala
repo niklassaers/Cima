@@ -14,7 +14,9 @@ import models._
 
 
 object Application extends Controller {
-  
+
+  object neo extends Neo4JRestService
+
 
   def base64Decode(in: String): Array[Byte] = (new Base64).decode(in.getBytes("UTF-8"))
 
@@ -33,7 +35,34 @@ object Application extends Controller {
    9. Add any additional relationships that may have been sent
    10. Return UUID to the newly created node
    */
-  def create = Action(parse.json) { request =>
+  def create = Auth.APIKey("123") { username => request =>
+
+    var props:Map[String, JsValue] = Map[String, JsValue]()
+    request.body.asJson  match {
+      case None => {}
+      case Some(x) => {
+        x match {
+          case JsObject(fields) => { props = fields.toMap }
+          case _ => {} // Ok("received something else: " + request.body + '\n')
+        }
+      }
+    }
+
+    if(!props.contains("UUID")) {
+      props += "UUID" -> toJson(UniqueIdGenerator.uuid)
+    }
+
+    if(!props.contains("entity"))
+      props += "entity" -> toJson("unset")
+
+    props += "should" -> toJson("appear")
+
+    props += "username" -> toJson(username)
+
+    Ok(props.toString)
+  }
+
+  def createUnAuth = Action(parse.json) { request =>
     var props:Map[String, JsValue] = Map[String, JsValue]()
     request.body match {
       case JsObject(fields) => { props = fields.toMap }
@@ -41,14 +70,12 @@ object Application extends Controller {
     }
 
     if(!props.contains("UUID"))
-      props.+("UUID" -> UniqueIdGenerator.uuid)
+      props += "UUID" -> toJson(UniqueIdGenerator.uuid)
 
-    if (!props.contains("entity"))
-      props.+("entity" -> "unset")
+    if(!props.contains("entity"))
+      props += "entity" -> toJson("unset")
 
-    props.+("should" -> "appear")
-
-    object neo extends Neo4JRestService
+    props += "should" -> toJson("appear")
 
     val (node, data: JsObject) = Http(
       (neo.neoRestNode <<(stringify(toJson(props)), "application/json"))
@@ -59,10 +86,6 @@ object Application extends Controller {
 
 //    neo.indexMap(props, "idxEntity", "entity", props.get("entity").get.toString)
 
-    val auth = new String(base64Decode(request.headers.get("AUTHORIZATION").get.replaceFirst("Basic", "")))
-    val split  = auth.split(":")
-    val user = split(0)
-    val pass = split(1)
 
     Ok("Yes - " + props + " / " + data.toString)
   }
@@ -103,5 +126,9 @@ object Application extends Controller {
     Ok("404")
   }
 
+  def error = Action {
+    Ok("404") // NotFound
+//    notFound("This was not what you were expecting")
+  }
 
 }

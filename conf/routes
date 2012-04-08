@@ -11,3 +11,5 @@ DELETE  /entity/:uuid              controllers.Application.delete(uuid: String)
 GET     /entity/list               controllers.Application.listEntities
 GET     /entity/all/:entity        controllers.Application.allOfEntity(entity: String)
 GET     /entity/filter/:entity     controllers.Application.filteredEntity(entity: String)
+
+GET     /error                      controllers.Application.error
